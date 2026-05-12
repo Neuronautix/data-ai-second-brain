@@ -4,13 +4,20 @@ from datetime import datetime
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class Severity(str, Enum):
     low = "low"
     medium = "medium"
     high = "high"
+
+
+class EvidenceStatus(str, Enum):
+    source_supported = "source_supported"
+    manual_seed_unverified = "manual_seed_unverified"
+    inferred = "inferred"
+    rejected = "rejected"
 
 
 class ProvisionalDecision(str, Enum):
@@ -39,6 +46,9 @@ class DocumentChunk(BaseModel):
     char_end: int
 
 
+_CONFIDENCE_MAP = {"low": 0.3, "medium": 0.6, "high": 0.9}
+
+
 class Evidence(BaseModel):
     evidence_id: str | None = None
     source_id: str
@@ -46,6 +56,17 @@ class Evidence(BaseModel):
     quote_or_summary: str
     page_or_section: str | None = None
     confidence: float = Field(default=0.7, ge=0.0, le=1.0)
+    evidence_status: EvidenceStatus = EvidenceStatus.manual_seed_unverified
+
+    @field_validator("confidence", mode="before")
+    @classmethod
+    def coerce_confidence(cls, v: object) -> float:
+        if isinstance(v, str):
+            try:
+                return _CONFIDENCE_MAP[v.lower()]
+            except KeyError:
+                return float(v)
+        return float(v)  # type: ignore[arg-type]
 
 
 class Condition(BaseModel):
@@ -90,6 +111,17 @@ class Rule(BaseModel):
     recommended_actions: list[str] = Field(default_factory=list)
     evidence: list[Evidence]
     confidence: float = Field(default=0.7, ge=0.0, le=1.0)
+    evidence_status: EvidenceStatus = EvidenceStatus.manual_seed_unverified
+
+    @field_validator("confidence", mode="before")
+    @classmethod
+    def coerce_confidence(cls, v: object) -> float:
+        if isinstance(v, str):
+            try:
+                return _CONFIDENCE_MAP[v.lower()]
+            except KeyError:
+                return float(v)
+        return float(v)  # type: ignore[arg-type]
 
     @model_validator(mode="after")
     def validate_rule_has_evidence(self) -> "Rule":
@@ -135,3 +167,7 @@ class SeedURL(BaseModel):
     authority: str = "unknown"
     trust_level: Literal["trusted", "reference", "unknown"] = "trusted"
     title: str | None = None
+
+
+# Alias used by extract_knowledge to make the intent explicit.
+ExtractionResult = KnowledgePayload
