@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Generated data (keep seeds and placeholders)
+data/raw/*
+!data/raw/.gitkeep
+data/markdown/*
+!data/markdown/.gitkeep
+data/chunks/*
+!data/chunks/.gitkeep
+data/extracted/*
+!data/extracted/.gitkeep
+data/indexes/*
+!data/indexes/.gitkeep

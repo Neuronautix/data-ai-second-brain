@@ -1,0 +1,696 @@
+{
+  "concepts": [
+    {
+      "id": "concept.finality",
+      "label": "Project finality",
+      "description": "Project purpose and finality must be explicit.",
+      "aliases": [
+        "purpose"
+      ],
+      "domain": "governance",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.legal_basis",
+      "label": "Legal basis",
+      "description": "A legal basis must be identified.",
+      "aliases": [
+        "lawful basis"
+      ],
+      "domain": "gdpr",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.personal_data",
+      "label": "Personal data",
+      "description": "Data related to an identified or identifiable person.",
+      "aliases": [],
+      "domain": "gdpr",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.health_data",
+      "label": "Health data",
+      "description": "Special category personal data related to health.",
+      "aliases": [
+        "sensitive health data"
+      ],
+      "domain": "health_data",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.pseudonymization",
+      "label": "Pseudonymization",
+      "description": "Reducing direct identifiability while retaining re-link potential.",
+      "aliases": [],
+      "domain": "security",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.anonymization",
+      "label": "Anonymization",
+      "description": "Irreversible de-identification.",
+      "aliases": [],
+      "domain": "security",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.health_data_warehouse",
+      "label": "Health data warehouse",
+      "description": "Structured secondary-use data environment (EDS).",
+      "aliases": [
+        "EDS"
+      ],
+      "domain": "health_data",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.external_partner",
+      "label": "External partner",
+      "description": "Non-hospital partner involved in processing.",
+      "aliases": [
+        "private partner"
+      ],
+      "domain": "governance",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.ai_processing",
+      "label": "AI processing",
+      "description": "Use of ML/AI models on project data.",
+      "aliases": [
+        "machine learning"
+      ],
+      "domain": "ai_governance",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.data_access",
+      "label": "Data access",
+      "description": "Access controls for project participants.",
+      "aliases": [],
+      "domain": "security",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.dpo",
+      "label": "Data Protection Officer",
+      "description": "DPO role in governance validation.",
+      "aliases": [],
+      "domain": "governance",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.data_minimization",
+      "label": "Data minimization",
+      "description": "Only necessary data should be processed.",
+      "aliases": [],
+      "domain": "gdpr",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.security_environment",
+      "label": "Secure environment",
+      "description": "Controlled processing environment for sensitive data.",
+      "aliases": [],
+      "domain": "security",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.secondary_use",
+      "label": "Secondary use",
+      "description": "Reuse of existing health data for additional purposes.",
+      "aliases": [],
+      "domain": "health_data",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    },
+    {
+      "id": "concept.research_project",
+      "label": "Research project",
+      "description": "Research-oriented project context.",
+      "aliases": [],
+      "domain": "research",
+      "source_ids": [
+        "seed.governance_baseline"
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "condition.uses_patient_data",
+      "label": "Uses patient data",
+      "description": "Project uses patient-level data.",
+      "detection_hint": "patient, dossier, medical record"
+    },
+    {
+      "id": "condition.uses_identifiable_data",
+      "label": "Uses identifiable data",
+      "description": "Directly identifiable fields are processed.",
+      "detection_hint": "name, identifier, direct identification"
+    },
+    {
+      "id": "condition.uses_pseudonymized_data",
+      "label": "Uses pseudonymized data",
+      "description": "Project uses pseudonymized records.",
+      "detection_hint": "pseudonymized, coded"
+    },
+    {
+      "id": "condition.has_external_partner",
+      "label": "Has external partner",
+      "description": "External private/public partner involved.",
+      "detection_hint": "partner, subcontractor, company"
+    },
+    {
+      "id": "condition.external_data_access_requested",
+      "label": "External data access requested",
+      "description": "Partner seeks direct data access.",
+      "detection_hint": "external access"
+    },
+    {
+      "id": "condition.uses_ai",
+      "label": "Uses AI",
+      "description": "AI/ML model use is proposed.",
+      "detection_hint": "AI, model, machine learning"
+    },
+    {
+      "id": "condition.clinical_deployment",
+      "label": "Clinical deployment",
+      "description": "Output used in clinical care.",
+      "detection_hint": "deployment, bedside, clinical decision"
+    },
+    {
+      "id": "condition.research_only",
+      "label": "Research only",
+      "description": "Restricted to research setting.",
+      "detection_hint": "research only"
+    },
+    {
+      "id": "condition.unknown_legal_basis",
+      "label": "Unknown legal basis",
+      "description": "Legal basis not yet specified.",
+      "detection_hint": "missing legal basis"
+    },
+    {
+      "id": "condition.unclear_finality",
+      "label": "Unclear finality",
+      "description": "Purpose/finality not clearly stated.",
+      "detection_hint": "unclear objective"
+    },
+    {
+      "id": "condition.large_data_scope",
+      "label": "Large data scope",
+      "description": "Large scope of records/variables.",
+      "detection_hint": "all patients, exhaustive extraction"
+    },
+    {
+      "id": "condition.data_export_requested",
+      "label": "Data export requested",
+      "description": "Data export outside core environment requested.",
+      "detection_hint": "export, transfer"
+    },
+    {
+      "id": "condition.processing_outside_hospital_environment",
+      "label": "Processing outside hospital environment",
+      "description": "Processing requested outside secure hospital env.",
+      "detection_hint": "outside hospital, external cloud"
+    }
+  ],
+  "actions": [
+    {
+      "id": "action.clarify_finality",
+      "label": "Clarify project finality",
+      "description": "Provide explicit finality and scope.",
+      "action_type": "documentation"
+    },
+    {
+      "id": "action.define_legal_basis",
+      "label": "Define legal basis",
+      "description": "Document legal basis before processing.",
+      "action_type": "legal"
+    },
+    {
+      "id": "action.consult_dpo",
+      "label": "Consult DPO",
+      "description": "Request DPO review for sensitive processing.",
+      "action_type": "governance"
+    },
+    {
+      "id": "action.consult_legal_team",
+      "label": "Consult legal team",
+      "description": "Request contractual/legal framing.",
+      "action_type": "legal"
+    },
+    {
+      "id": "action.limit_data_scope",
+      "label": "Limit data scope",
+      "description": "Apply minimization to variables and cohort.",
+      "action_type": "governance"
+    },
+    {
+      "id": "action.pseudonymize_data",
+      "label": "Pseudonymize data",
+      "description": "Use pseudonymization when feasible.",
+      "action_type": "security"
+    },
+    {
+      "id": "action.define_partner_role",
+      "label": "Define partner role",
+      "description": "Clarify controller/processor responsibilities.",
+      "action_type": "legal"
+    },
+    {
+      "id": "action.restrict_data_access",
+      "label": "Restrict data access",
+      "description": "Use least-privilege access model.",
+      "action_type": "security"
+    },
+    {
+      "id": "action.use_secure_environment",
+      "label": "Use secure environment",
+      "description": "Prefer in-hospital secure environments.",
+      "action_type": "security"
+    },
+    {
+      "id": "action.create_project_framing_note",
+      "label": "Create project framing note",
+      "description": "Write structured project framing note.",
+      "action_type": "documentation"
+    },
+    {
+      "id": "action.prepare_dpo_brief",
+      "label": "Prepare DPO brief",
+      "description": "Prepare concise brief for DPO/legal.",
+      "action_type": "documentation"
+    },
+    {
+      "id": "action.define_data_retention",
+      "label": "Define data retention",
+      "description": "Specify retention and deletion timeline.",
+      "action_type": "governance"
+    },
+    {
+      "id": "action.define_security_measures",
+      "label": "Define security measures",
+      "description": "Document technical and organizational controls.",
+      "action_type": "security"
+    },
+    {
+      "id": "action.document_provenance",
+      "label": "Document provenance",
+      "description": "Maintain evidence/provenance links.",
+      "action_type": "documentation"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule.finality_required",
+      "label": "Finality is required",
+      "description": "Projects must state clear finality.",
+      "domain": "gdpr",
+      "severity": "high",
+      "applies_to": [
+        "health_data"
+      ],
+      "trigger_conditions": [
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.clarify_finality"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.1",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.1",
+          "quote_or_summary": "Purpose limitation requires explicit project finality.",
+          "page_or_section": "seed",
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "rule.legal_basis_required",
+      "label": "Legal basis is required",
+      "description": "Processing requires an identified legal basis.",
+      "domain": "gdpr",
+      "severity": "high",
+      "applies_to": [
+        "personal_data"
+      ],
+      "trigger_conditions": [
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.define_legal_basis"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.2",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.1",
+          "quote_or_summary": "Lawful basis must be documented before processing.",
+          "page_or_section": "seed",
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "rule.data_minimization_required",
+      "label": "Data minimization required",
+      "description": "Only necessary data should be accessed.",
+      "domain": "gdpr",
+      "severity": "medium",
+      "applies_to": [
+        "personal_data"
+      ],
+      "trigger_conditions": [
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.limit_data_scope"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.3",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.1",
+          "quote_or_summary": "Minimize variables and cohort to need-to-know.",
+          "page_or_section": "seed",
+          "confidence": 0.75
+        }
+      ],
+      "confidence": 0.75
+    },
+    {
+      "id": "rule.dpo_review_required_for_health_data",
+      "label": "DPO review required for health data",
+      "description": "Sensitive health-data projects require DPO involvement.",
+      "domain": "health_data",
+      "severity": "high",
+      "applies_to": [
+        "health_data"
+      ],
+      "trigger_conditions": [
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.consult_dpo",
+        "action.prepare_dpo_brief"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.4",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.2",
+          "quote_or_summary": "Health-data projects should be reviewed with DPO/legal oversight.",
+          "page_or_section": "seed",
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "rule.external_partner_requires_contractual_framing",
+      "label": "External partner requires contractual framing",
+      "description": "External partners require explicit contractual governance framing.",
+      "domain": "sharing",
+      "severity": "high",
+      "applies_to": [
+        "external_partner"
+      ],
+      "trigger_conditions": [
+        "condition.has_external_partner"
+      ],
+      "recommended_actions": [
+        "action.define_partner_role",
+        "action.consult_legal_team"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.5",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.2",
+          "quote_or_summary": "Partner relationships require contractual framing and role clarity.",
+          "page_or_section": "seed",
+          "confidence": 0.78
+        }
+      ],
+      "confidence": 0.78
+    },
+    {
+      "id": "rule.external_data_access_requires_restriction",
+      "label": "External access requires restriction",
+      "description": "External access to data must be strictly controlled.",
+      "domain": "security",
+      "severity": "high",
+      "applies_to": [
+        "external_partner"
+      ],
+      "trigger_conditions": [
+        "condition.external_data_access_requested"
+      ],
+      "recommended_actions": [
+        "action.restrict_data_access",
+        "action.use_secure_environment"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.6",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.3",
+          "quote_or_summary": "External access should be constrained and monitored.",
+          "page_or_section": "seed",
+          "confidence": 0.76
+        }
+      ],
+      "confidence": 0.76
+    },
+    {
+      "id": "rule.data_export_requires_specific_validation",
+      "label": "Data export requires specific validation",
+      "description": "Data export requests require explicit additional validation.",
+      "domain": "sharing",
+      "severity": "high",
+      "applies_to": [
+        "external_partner"
+      ],
+      "trigger_conditions": [
+        "condition.data_export_requested"
+      ],
+      "recommended_actions": [
+        "action.consult_dpo",
+        "action.consult_legal_team"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.7",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.3",
+          "quote_or_summary": "Exports outside core environment need case-by-case validation.",
+          "page_or_section": "seed",
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "rule.ai_health_project_requires_enhanced_governance",
+      "label": "AI health project requires enhanced governance",
+      "description": "AI use on health data requires reinforced governance review.",
+      "domain": "ai_governance",
+      "severity": "high",
+      "applies_to": [
+        "ai_processing"
+      ],
+      "trigger_conditions": [
+        "condition.uses_ai",
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.consult_dpo",
+        "action.define_security_measures"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.8",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.4",
+          "quote_or_summary": "AI and health data combination requires enhanced governance controls.",
+          "page_or_section": "seed",
+          "confidence": 0.77
+        }
+      ],
+      "confidence": 0.77
+    },
+    {
+      "id": "rule.clinical_ai_deployment_requires_specific_risk_review",
+      "label": "Clinical AI deployment requires risk review",
+      "description": "Clinical deployment of AI requires specific risk assessment.",
+      "domain": "ai_governance",
+      "severity": "high",
+      "applies_to": [
+        "ai_processing"
+      ],
+      "trigger_conditions": [
+        "condition.clinical_deployment",
+        "condition.uses_ai"
+      ],
+      "recommended_actions": [
+        "action.define_security_measures",
+        "action.consult_dpo"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.9",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.4",
+          "quote_or_summary": "Clinical AI use requires explicit risk management review.",
+          "page_or_section": "seed",
+          "confidence": 0.79
+        }
+      ],
+      "confidence": 0.79
+    },
+    {
+      "id": "rule.unclear_finality_blocks_decision",
+      "label": "Unclear finality blocks decision",
+      "description": "No provisional go should be issued without clear finality.",
+      "domain": "governance",
+      "severity": "high",
+      "applies_to": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "condition.unclear_finality"
+      ],
+      "recommended_actions": [
+        "action.clarify_finality"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.10",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.5",
+          "quote_or_summary": "Unclear finality implies insufficient information.",
+          "page_or_section": "seed",
+          "confidence": 0.85
+        }
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "rule.unknown_legal_basis_blocks_decision",
+      "label": "Unknown legal basis blocks decision",
+      "description": "No provisional go should be issued without legal basis.",
+      "domain": "legal",
+      "severity": "high",
+      "applies_to": [
+        "all"
+      ],
+      "trigger_conditions": [
+        "condition.unknown_legal_basis"
+      ],
+      "recommended_actions": [
+        "action.define_legal_basis",
+        "action.consult_legal_team"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.11",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.5",
+          "quote_or_summary": "Unknown legal basis implies insufficient information.",
+          "page_or_section": "seed",
+          "confidence": 0.85
+        }
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "rule.patient_data_requires_traceability",
+      "label": "Patient data requires traceability",
+      "description": "Handling patient data requires strong provenance/traceability.",
+      "domain": "governance",
+      "severity": "medium",
+      "applies_to": [
+        "health_data"
+      ],
+      "trigger_conditions": [
+        "condition.uses_patient_data"
+      ],
+      "recommended_actions": [
+        "action.document_provenance"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.12",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.6",
+          "quote_or_summary": "Traceability supports accountability for patient data use.",
+          "page_or_section": "seed",
+          "confidence": 0.74
+        }
+      ],
+      "confidence": 0.74
+    },
+    {
+      "id": "rule.secure_environment_preferred_for_sensitive_data",
+      "label": "Secure environment preferred for sensitive data",
+      "description": "Sensitive data processing should remain in a secure environment.",
+      "domain": "security",
+      "severity": "high",
+      "applies_to": [
+        "health_data"
+      ],
+      "trigger_conditions": [
+        "condition.processing_outside_hospital_environment"
+      ],
+      "recommended_actions": [
+        "action.use_secure_environment"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.seed.13",
+          "source_id": "seed.governance_baseline",
+          "chunk_id": "seed.chunk.6",
+          "quote_or_summary": "Prefer secure controlled environments for sensitive data.",
+          "page_or_section": "seed",
+          "confidence": 0.78
+        }
+      ],
+      "confidence": 0.78
+    }
+  ],
+  "relations": [],
+  "evidence": []
+}
