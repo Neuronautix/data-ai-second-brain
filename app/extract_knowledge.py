@@ -86,19 +86,64 @@ def _parse_json(raw: str) -> dict:
     return json.loads(text)
 
 
-def _filter_rejected(payload_dict: dict) -> dict:
-    """Remove rules with evidence_status=rejected before validation."""
+def _filter_rejected(payload_dict: dict, chunk: dict | None = None) -> tuple[dict, list[dict]]:
+    """Remove rejected/inconsistent rules and return (clean_payload, rejected_entries).
+
+    Rejected entries contain metadata suitable for writing to extraction_log.jsonl.
+    """
     rules = payload_dict.get("rules", [])
-    payload_dict["rules"] = [
-        r for r in rules
-        if r.get("evidence_status") != EvidenceStatus.rejected.value
-    ]
-    return payload_dict
+    accepted: list[dict] = []
+    rejected_entries: list[dict] = []
+    chunk_id = (chunk or {}).get("chunk_id", "unknown")
+    source_id = (chunk or {}).get("source_id", "unknown")
+
+    for r in rules:
+        rule_id = r.get("id", "unknown")
+        label = r.get("label", "")
+        ev_status = r.get("evidence_status", EvidenceStatus.manual_seed_unverified.value)
+        evidence = r.get("evidence", [])
+
+        reason = _check_rule_rejection_reason(r, ev_status, evidence)
+        if reason:
+            rejected_entries.append({
+                "chunk_id": chunk_id,
+                "source_id": source_id,
+                "rejected_rule_id": rule_id,
+                "rejected_rule_label": label,
+                "rejection_reason": reason,
+                "evidence_status": ev_status,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            })
+        else:
+            accepted.append(r)
+
+    payload_dict["rules"] = accepted
+    return payload_dict, rejected_entries
 
 
-def _validate_extraction(raw_dict: dict) -> ExtractionResult:
-    filtered = _filter_rejected(raw_dict)
-    return ExtractionResult.model_validate(filtered)
+def _check_rule_rejection_reason(rule: dict, ev_status: str, evidence: list) -> str | None:
+    """Return rejection reason string if rule should be rejected, else None."""
+    if ev_status == EvidenceStatus.rejected.value:
+        return "evidence_status=rejected"
+    if not evidence:
+        if ev_status != EvidenceStatus.manual_seed_unverified.value:
+            return f"no evidence and evidence_status={ev_status} (must be manual_seed_unverified)"
+    if ev_status == EvidenceStatus.source_supported.value:
+        source_ev = [
+            e for e in evidence
+            if e.get("evidence_status") == EvidenceStatus.source_supported.value
+        ]
+        if not source_ev:
+            return (
+                "evidence_status=source_supported but no evidence item has "
+                "evidence_status=source_supported"
+            )
+    return None
+
+
+def _validate_extraction(raw_dict: dict, chunk: dict | None = None) -> tuple[ExtractionResult, list[dict]]:
+    filtered, rejected_entries = _filter_rejected(raw_dict, chunk=chunk)
+    return ExtractionResult.model_validate(filtered), rejected_entries
 
 
 # ---------------------------------------------------------------------------
@@ -192,11 +237,17 @@ def extract_chunks(
 
             # Validate with Pydantic
             try:
-                result = _validate_extraction(raw_dict)
+                result, rejected_entries = _validate_extraction(raw_dict, chunk=chunk)
             except ValidationError as exc:
                 _log(log_fh, chunk_id, "error", error=f"Validation failed: {exc}", raw=raw[:500])
                 print(f"  ERROR {chunk_id}: Validation failed — {exc}")
                 continue
+
+            # Log rejected rule candidates
+            for entry in rejected_entries:
+                entry["status"] = "rejected_rule"
+                log_fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                log_fh.flush()
 
             # Write output
             out_file.write_text(
@@ -205,8 +256,9 @@ def extract_chunks(
             )
             n_rules = len(result.rules)
             n_concepts = len(result.concepts)
-            _log(log_fh, chunk_id, "success", rules=n_rules, concepts=n_concepts)
-            print(f"  OK    {chunk_id}: {n_rules} rule(s), {n_concepts} concept(s)")
+            n_rejected = len(rejected_entries)
+            _log(log_fh, chunk_id, "success", rules=n_rules, concepts=n_concepts, rejected=n_rejected)
+            print(f"  OK    {chunk_id}: {n_rules} rule(s), {n_concepts} concept(s), {n_rejected} rejected")
 
     print(f"\nLog written to {log_path}")
 

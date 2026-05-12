@@ -103,19 +103,36 @@ def test_valid_extraction_passes_schema_validation() -> None:
     assert result.rules[0].evidence_status == EvidenceStatus.source_supported
 
 
-def test_rule_without_evidence_fails_validation() -> None:
-    with pytest.raises(ValidationError, match="evidence"):
-        Rule(
-            id="rule.bad",
-            label="Bad rule",
-            description="No evidence",
-            domain="RGPD",
-            severity=Severity.high,
-            evidence=[],
-        )
+def test_rule_without_evidence_fails_for_non_manual_statuses() -> None:
+    """Non-manual-seed rules require at least one evidence item."""
+    for status in ("source_supported", "inferred"):
+        with pytest.raises(ValidationError, match="evidence"):
+            Rule(
+                id="rule.bad",
+                label="Bad rule",
+                description="No evidence",
+                domain="RGPD",
+                severity=Severity.high,
+                evidence_status=status,  # type: ignore[arg-type]
+                evidence=[],
+            )
 
 
-def test_knowledge_payload_rejects_rule_without_evidence() -> None:
+def test_manual_seed_rule_without_evidence_is_allowed() -> None:
+    """manual_seed_unverified rules may have empty evidence (KB seeds do not cite chunks)."""
+    rule = Rule(
+        id="rule.seed",
+        label="Seeded rule",
+        description="Seeded manually",
+        domain="RGPD",
+        severity=Severity.low,
+        evidence_status=EvidenceStatus.manual_seed_unverified,
+        evidence=[],
+    )
+    assert rule.evidence_status == EvidenceStatus.manual_seed_unverified
+
+
+def test_knowledge_payload_rejects_source_supported_rule_without_evidence() -> None:
     with pytest.raises(ValidationError):
         KnowledgePayload.model_validate(
             {
@@ -126,6 +143,7 @@ def test_knowledge_payload_rejects_rule_without_evidence() -> None:
                         "description": "No evidence",
                         "domain": "gdpr",
                         "severity": "high",
+                        "evidence_status": "source_supported",
                         "evidence": [],
                     }
                 ]
@@ -191,13 +209,15 @@ def test_filter_rejected_removes_rejected_rules() -> None:
 
     payload = {
         "rules": [
-            {"id": "rule.ok", "evidence_status": "source_supported"},
+            {"id": "rule.ok", "evidence_status": "source_supported",
+             "evidence": [_make_evidence()]},
             {"id": "rule.bad", "evidence_status": "rejected"},
         ]
     }
-    filtered = _filter_rejected(payload)
-    assert len(filtered["rules"]) == 1
-    assert filtered["rules"][0]["id"] == "rule.ok"
+    clean, rejected = _filter_rejected(payload)
+    assert len(clean["rules"]) == 1
+    assert clean["rules"][0]["id"] == "rule.ok"
+    assert any(r["rejected_rule_id"] == "rule.bad" for r in rejected)
 
 
 def test_parse_json_strips_markdown_fences() -> None:

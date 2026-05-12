@@ -85,11 +85,51 @@ streamlit run app/ui_streamlit.py
 - ✅ Basic document and URL ingestion
 - ✅ Markdown chunking
 - ✅ Minimal decision assistant and DPO/legal brief tab
-- ⚠️ TODO: LLM-based extraction (`app/extract_knowledge.py`)
+- ✅ LLM-based extraction (`app/extract_knowledge.py`)
+- ✅ KB normalization with deduplication (`app/normalize_kb.py`)
+- ✅ Evidence consistency validation and rejected-rule logging
+- ✅ Extraction quality review (`app/review_extractions.py`)
+- ✅ KB inspection (`app/inspect_kb.py`)
 - ⚠️ TODO: Vector index building (`app/build_index.py`)
 
-## Testing
+## Phase 4 / 4.5 workflow
+
+### Extract knowledge from chunks
 
 ```bash
-pytest
+python -m app.extract_knowledge \
+    --chunks data/chunks/chunks.jsonl \
+    --output-dir data/extracted \
+    --limit 10
 ```
+
+### Review extraction quality
+
+```bash
+python -m app.review_extractions --extracted-dir data/extracted
+# Filter by domain or status:
+python -m app.review_extractions --extracted-dir data/extracted --domain RGPD --show-rules
+python -m app.review_extractions --extracted-dir data/extracted --status source_supported
+```
+
+### Merge extractions into the KB
+
+```bash
+python -m app.normalize_kb \
+    --input data/kb/kb.json \
+    --extracted-dir data/extracted \
+    --output data/kb/kb.json \
+    --sqlite data/kb/kb.sqlite
+```
+
+### Inspect the normalized KB
+
+```bash
+python -m app.inspect_kb --kb data/kb/kb.json
+```
+
+The `review_extractions` command summarizes extraction quality (status breakdown, top domains,
+duplicate labels, rules missing source evidence, rejected candidates).
+
+The `inspect_kb` command identifies weak rules (missing actions/conditions), manual/unverified
+rules, high-severity rules, duplicate IDs, and evidence coverage.

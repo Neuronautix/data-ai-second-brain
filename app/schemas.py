@@ -126,7 +126,22 @@ class Rule(BaseModel):
     @model_validator(mode="after")
     def validate_rule_has_evidence(self) -> "Rule":
         if not self.evidence:
-            raise ValueError("Rule requires at least one evidence item (no evidence, no rule)")
+            if self.evidence_status != EvidenceStatus.manual_seed_unverified:
+                raise ValueError("Rule requires at least one evidence item (no evidence, no rule)")
+        if self.evidence_status == EvidenceStatus.source_supported:
+            if not self.evidence:
+                raise ValueError(
+                    "A source_supported rule must have non-empty evidence"
+                )
+            source_ev = [
+                e for e in self.evidence
+                if e.evidence_status == EvidenceStatus.source_supported
+            ]
+            if not source_ev:
+                raise ValueError(
+                    "A source_supported rule must contain at least one evidence item "
+                    "with evidence_status=source_supported"
+                )
         return self
 
 
