@@ -18,7 +18,7 @@ def _dedupe_by_id(items: list[dict]) -> list[dict]:
             merged = seen[item_id]
             for key, value in item.items():
                 if isinstance(value, list):
-                    merged[key] = list(dict.fromkeys((merged.get(key, []) or []) + value))
+                    merged[key] = list(dict.fromkeys(merged.get(key, []) + value))
     return list(seen.values())
 
 

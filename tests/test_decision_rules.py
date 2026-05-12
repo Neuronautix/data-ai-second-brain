@@ -1,7 +1,7 @@
 from app.query_decision import decide
 
 
-def test_patient_data_triggers_dpo_review(tmp_path):
+def test_patient_data_triggers_dpo_review():
     output = decide(
         "AI research on patient records with purpose and legal basis contract specified.",
     )

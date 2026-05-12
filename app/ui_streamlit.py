@@ -43,7 +43,9 @@ with tab_brief:
         st.markdown("### DPO/Legal brief (draft)")
         st.write(
             {
-                "project_finality": "unknown" if "finality" in " ".join(result.missing_information).lower() else "to validate",
+                "project_finality": "unknown"
+                if "Project finality is unclear" in result.missing_information
+                else "to validate",
                 "data_categories": "to validate",
                 "data_source": "to validate",
                 "actors": "to validate",
