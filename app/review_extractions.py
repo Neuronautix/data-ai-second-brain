@@ -57,12 +57,12 @@ def _load_log(extracted_dir: Path) -> list[dict]:
 # Filtering
 # ---------------------------------------------------------------------------
 
-def _filter_rules(
-    rules: list[dict],
+def _filter_items(
+    items: list[dict],
     domain: str | None = None,
     status: str | None = None,
 ) -> list[dict]:
-    result = rules
+    result = items
     if domain:
         result = [r for r in result if r.get("domain", "").lower() == domain.lower()]
     if status:
@@ -110,8 +110,8 @@ def review(
     all_rules, all_concepts = _load_extracted_files(extracted_dir)
     log_entries = _load_log(extracted_dir)
 
-    rules = _filter_rules(all_rules, domain=domain, status=status)
-    concepts = _filter_rules(all_concepts, domain=domain, status=None)
+    rules = _filter_items(all_rules, domain=domain, status=status)
+    concepts = _filter_items(all_concepts, domain=domain, status=None)
 
     # Status breakdown
     status_counter: Counter[str] = Counter(r.get("evidence_status", "unknown") for r in all_rules)
